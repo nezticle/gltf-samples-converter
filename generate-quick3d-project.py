@@ -13,7 +13,7 @@ def copy_template_files(output_dir):
     copy2("templates/gltf2TestViewer.pro", output_dir)
     copy2("templates/viewer.qrc", output_dir)
 
-def generate_qrc_files(output_dir):
+def generate_qrc_files(output_dir, blacklist):
     original_dir = os.getcwd()
     os.chdir(output_dir)
 
@@ -22,6 +22,8 @@ def generate_qrc_files(output_dir):
     for model in sorted(os.listdir(".")):
         # models will only be in folders
         if not os.path.isdir(model):
+            continue
+        if model in blacklist:
             continue
 
         os.chdir(model)
@@ -58,11 +60,13 @@ def generate_qrc_files(output_dir):
 
     os.chdir(original_dir)
 
-def generate_tests(directory):
+def generate_tests(directory, blacklist):
     os.chdir(directory)
     models = {}
     for model in sorted(os.listdir(".")):
         if not os.path.isdir(model):
+            continue
+        if model in blacklist:
             continue
         os.chdir(model)
         model_contents = os.listdir(".")
@@ -79,12 +83,14 @@ def generate_tests(directory):
     os.chdir("..")
     return models
 
-def generate_test_list(output_dir):
+def generate_test_list(output_dir, blacklist):
     original_dir = os.getcwd()
     os.chdir(output_dir)
     tests = {}
     for test in sorted(os.listdir(".")):
         if not os.path.isdir(test):
+            continue
+        if model in blacklist:
             continue
         os.chdir(test)
         # Get the component name
@@ -115,6 +121,15 @@ def generate_test_model(output_dir, tests):
     f.close()
     os.chdir(original_dir)
 
+def populate_blacklist():
+    blacklist = []
+    f = open("blacklist.txt", "r")
+    for line in f:
+        if line.startswith("#"):
+            continue
+        blacklist.append(line.strip())
+    f.close()
+    return blacklist
 
 parser = ArgumentParser()
 parser.add_argument("-o", "--output", dest="output",
@@ -125,18 +140,19 @@ parser.add_argument("-i", "--input", dest="input",
                     help="Location of source directory", metavar="INPUT")                                  
 args = parser.parse_args()
 
-
 copy_template_files(args.output)
+
+blacklist = populate_blacklist()
 # Generate QML from GLTF2 files
-models = generate_tests(args.input)
+models = generate_tests(args.input, blacklist)
 for model in models:
     cmd = args.balsam + " -o " + args.output + os.path.sep + model + os.path.sep + " " + models[model]
     #print(cmd) 
     os.system(cmd)
 
 # Generate QML Viewer code
-tests = generate_test_list(args.output)
+tests = generate_test_list(args.output, blacklist)
 generate_test_model(args.output, tests)
-generate_qrc_files(args.output)
+generate_qrc_files(args.output, blacklist)
 
 #print(tests)

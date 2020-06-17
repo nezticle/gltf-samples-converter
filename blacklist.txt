@@ -1,0 +1,5 @@
+# blacklist of projects to not generate
+FlightHelmet
+Sponza
+MetalRoughSpheres
+SciFiHelmet
