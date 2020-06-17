@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>GltfTestViewer.qml</file>
+        <file>GltfTestsModel.qml</file>
+        <file>environment.hdr</file>
+    </qresource>
+</RCC>
