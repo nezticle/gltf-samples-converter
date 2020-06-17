@@ -4,7 +4,7 @@ from shutil import copy2
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
 
-generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
+#./generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
 
 def copy_template_files(output_dir):
     copy2("templates/environment.hdr", output_dir)
