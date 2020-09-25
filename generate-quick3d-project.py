@@ -51,7 +51,7 @@ def generate_qrc_files(output_dir, blacklist):
 
     # append the QRC file to the .pro file
     f = open("gltf2TestViewer.pro", "a")
-    if qrcList.count > 0:
+    if len(qrcList) > 0:
         f.write("RESOURCES += \\\n")
 
     for qrc in qrcList:

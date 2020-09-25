@@ -1,17 +1,15 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
-import QtQuick3D 1.15
-import QtQuick3D.Helpers 1.15
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick3D
+import QtQuick3D.Helpers
 
 Window {
 	visible: true
 	width: 1920
 	height: 1280
 	title: qsTr("GLTF Viewer")
-
-
-
 
 	Node {
         id: sceneRoot
@@ -23,8 +21,6 @@ Window {
             y: 0
             function resetView() {
                 position = Qt.vector3d(0, 0, 600)
-                //cameraOrigin.position = Qt.vector3d(0,0,0)
-                //cameraOrigin.eulerRotation = Qt.vector3d(0, 0, 0)
                 camera.eulerRotation = Qt.vector3d(0, 0, 0)
             }
         }
@@ -105,7 +101,7 @@ Window {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 200
-        Column {
+        ColumnLayout {
             anchors.fill: parent
 
             RadioButton {
@@ -173,7 +169,7 @@ Window {
             ListView {
                 id: listView
                 width: parent.width
-                height: parent.height - 55
+                ColumnLayout.fillHeight: true
                 model: testsModel
                 delegate: testDelegate
                 highlight: highlightBar
