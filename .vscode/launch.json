@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["-o", "D:\\Code\\temp", "-b", "balsam.exe", "-i", "D:\\Code\\glTF-Sample-Models\\2.0"]
+            "args": ["-o", "~/Code/temp", "-b", "~/Code/qt6-macOS/qtbase/bin/balsam", "-i", "~/Code/glTF-Sample-Models/2.0"]
         }
     ]
 }

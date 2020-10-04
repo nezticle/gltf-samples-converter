@@ -6,6 +6,36 @@ import xml.etree.cElementTree as ET
 
 #./generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
 
+def generate_ios_bundle_data(output_dir, blacklist):
+    original_dir = os.getcwd()
+    os.chdir(output_dir)
+
+    # Open the .pro file to append the build_data commands
+    f = open("gltf2TestViewer.pro", "a")
+    f.write("ios {\n")
+    f.write("\tios_models.files = ")
+
+    # Add the viewer files
+    f.write("\\\n\t\t$$PWD/GltfTestViewer.qml ")
+    f.write("\\\n\t\t$$PWD/GltfTestsModel.qml ")
+    f.write("\\\n\t\t$$PWD/environment.hdr ")
+
+    # Get a list of all resources that need to by copied into the data_bundle
+    for model in sorted(os.listdir(".")):
+        # models will only be in folders
+        if not os.path.isdir(model):
+            continue
+        if model in blacklist:
+            continue
+
+        f.write("\\\n\t\t$$PWD/" + model + "/ ")
+
+    f.write("\n\tQMAKE_BUNDLE_DATA += ios_models\n")
+
+    f.write("} #ios\n")
+    f.close()
+    os.chdir(original_dir)
+
 def copy_template_files(output_dir):
     copy2("templates/environment.hdr", output_dir)
     copy2("templates/main.cpp", output_dir)
@@ -51,11 +81,14 @@ def generate_qrc_files(output_dir, blacklist):
 
     # append the QRC file to the .pro file
     f = open("gltf2TestViewer.pro", "a")
+    f.write("!ios {\n")
+
     if len(qrcList) > 0:
-        f.write("RESOURCES += \\\n")
+        f.write("\tRESOURCES += \\\n")
 
     for qrc in qrcList:
-        f.write("    " + qrc + " \\\n")
+        f.write("\t\t" + qrc + " \\\n")
+    f.write("} #!ios\n")
     f.close()
 
     os.chdir(original_dir)
@@ -105,7 +138,8 @@ def generate_test_model(output_dir, tests):
     original_dir = os.getcwd()
     os.chdir(output_dir)
     f = open("GltfTestsModel.qml", "w")
-    f.write("import QtQuick 2.15\n")
+    f.write("import QtQuick\n")
+    f.write("import QtQml.Models\n\n")
 
     for test in tests:
         f.write("import \"" + test + "\"\n")
@@ -147,12 +181,12 @@ blacklist = populate_blacklist()
 models = generate_tests(args.input, blacklist)
 for model in models:
     cmd = args.balsam + " -o " + args.output + os.path.sep + model + os.path.sep + " " + models[model]
-    #print(cmd) 
     os.system(cmd)
 
 # Generate QML Viewer code
 tests = generate_test_list(args.output, blacklist)
 generate_test_model(args.output, tests)
 generate_qrc_files(args.output, blacklist)
+generate_ios_bundle_data(args.output, blacklist)
 
 #print(tests)

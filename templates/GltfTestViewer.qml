@@ -1,15 +1,18 @@
 import QtQuick
-import QtQuick.Window
 import QtQuick.Controls
+import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import QtQuick3D
 import QtQuick3D.Helpers
 
 Window {
+    id: window
 	visible: true
 	width: 1920
 	height: 1280
 	title: qsTr("GLTF Viewer")
+
+    property bool isFullscreen: false
 
 	Node {
         id: sceneRoot
@@ -17,16 +20,10 @@ Window {
         PerspectiveCamera {
             id: camera
             z: 600
-            x: 0
-            y: 0
             function resetView() {
                 position = Qt.vector3d(0, 0, 600)
                 camera.eulerRotation = Qt.vector3d(0, 0, 0)
             }
-        }
-
-        DirectionalLight {
-
         }
 
         Loader3D {
@@ -86,6 +83,14 @@ Window {
                 wasdController.mouseEnabled = true
             }
         }
+        Button {
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            text: "[ ]"
+            onClicked: {
+                window.isFullscreen = !window.isFullscreen
+            }
+        } 
     }
 
 
@@ -95,12 +100,165 @@ Window {
         keysEnabled: true
     }
 
+    Item {
+        id: mobileWasd
+        visible: isMobile
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: parent.width * 0.2
+        height: parent.height * 0.2
+
+        property real buttonWidth: width / 3 - 3 * 2
+        property real buttonHeight: height / 2 - 2 * 2
+
+        Grid {
+            anchors.fill: parent
+            rows: 2
+            columns: 3
+            spacing: 2
+
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "Down"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.downPressed()
+                    }
+                    onReleased: {
+                        wasdController.downReleased()
+                    }
+                    onExited: {
+                        wasdController.downReleased()
+                    }
+                }
+            }
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "W"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.forwardPressed()
+                    }
+                    onReleased: {
+                        wasdController.forwardReleased()
+                    }
+                    onExited: {
+                        wasdController.forwardReleased()
+                    }
+                }
+            }
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "Up"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.upPressed()
+                    }
+                    onReleased: {
+                        wasdController.upReleased()
+                    }
+                    onExited: {
+                        wasdController.upReleased()
+                    }
+                }
+            }
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "A"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.leftPressed()
+                    }
+                    onReleased: {
+                        wasdController.leftReleased()
+                    }
+                    onExited: {
+                        wasdController.leftReleased()
+                    }
+                }
+            }
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "S"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.backPressed()
+                    }
+                    onReleased: {
+                        wasdController.backReleased()
+                    }
+                    onExited: {
+                        wasdController.backReleased()
+                    }
+                }
+            }
+            Rectangle {
+                width: mobileWasd.buttonWidth
+                height: mobileWasd.buttonHeight
+                radius: 10
+                color: "#55FFFFFF"
+                Text {
+                    anchors.centerIn: parent
+                    text: "D"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        wasdController.rightPressed()
+                    }
+                    onReleased: {
+                        wasdController.rightReleased()
+                    }
+                    onExited: {
+                        wasdController.rightReleased()
+                    }
+                }
+            }
+        }
+    }
+
     Rectangle {
         id: selectionRect
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: 200
+        visible: !window.isFullscreen
+        width: !window.isFullscreen ? 200 : 0
         ColumnLayout {
             anchors.fill: parent
 
@@ -155,14 +313,14 @@ Window {
                         loadedItem.scale = Qt.vector3d(10000, 10000, 10000)
                 }
             }
-            Rectangle {
-                width: parent.width
-                height: 55
-                z: 1
-                Button {
-                    anchors.fill: parent
-                    onClicked: camera.resetView()
-                    text: "Recenter view"
+            Button {
+                onClicked: camera.resetView()
+                text: "Recenter view"
+            }
+            Button {
+                text: "Previous"
+                onClicked: {
+                    listView.decrementCurrentIndex()
                 }
             }
 
@@ -174,8 +332,15 @@ Window {
                 delegate: testDelegate
                 highlight: highlightBar
                 highlightFollowsCurrentItem: true
+                clip: true
+             }
+
+             Button {
+                 text: "Next"
+                 onClicked: {
+                     listView.incrementCurrentIndex()
+                 }
              }
         }
     }
-
 }
