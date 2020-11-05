@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 from shutil import copy2
+from shutil import copytree
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
 
@@ -42,6 +43,10 @@ def copy_template_files(output_dir):
     copy2("templates/GltfTestViewer.qml", output_dir)
     copy2("templates/gltf2TestViewer.pro", output_dir)
     copy2("templates/viewer.qrc", output_dir)
+
+def copy_lancelot_template_files(output_dir):
+    copytree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir, dirs_exist_ok=True)
+    copy2("templates/environment.hdr", output_dir + os.path.sep + "data")
 
 def generate_qrc_files(output_dir, blacklist):
     original_dir = os.getcwd()
@@ -94,6 +99,7 @@ def generate_qrc_files(output_dir, blacklist):
     os.chdir(original_dir)
 
 def generate_tests(directory, blacklist):
+    original_dir = os.getcwd()
     os.chdir(directory)
     models = {}
     for model in sorted(os.listdir(".")):
@@ -113,7 +119,8 @@ def generate_tests(directory, blacklist):
             os.chdir("..")
             break # only handle the first found
         os.chdir("..")
-    os.chdir("..")
+
+    os.chdir(original_dir)
     return models
 
 def generate_test_list(output_dir, blacklist):
@@ -155,6 +162,46 @@ def generate_test_model(output_dir, tests):
     f.close()
     os.chdir(original_dir)
 
+def generate_lancelot_tests(output_dir, tests):
+    # load the template file
+    templateFile = open("templates/LancelotView.qml", "r")
+    templateString = templateFile.read()
+    templateFile.close()
+
+    original_dir = os.getcwd()
+    os.chdir(output_dir)
+
+    ignoreFile = open("Ignore", "a")
+    for test in tests:
+        # Maintain the Ignore file
+        ignoreFile.write(tests[test] + "\n")
+        # Generate the test case
+        localTemplate = templateString
+
+        # get file name
+        componentName = tests[test].split("/")[-1:][0]
+
+        # source file (same folder)
+        localTemplate = localTemplate.replace("###", "\"" + componentName + "\"")
+
+        # scale (settings file)
+        localTemplate = localTemplate.replace("@@@", "Qt.vector3d(1, 1, 1)")
+
+        # y position (settings file)
+        localTemplate = localTemplate.replace("$$$", "0")
+
+        # write test file
+        componentName = componentName.replace(".qml", "")
+        testFileName = componentName + "Test.qml"
+        os.chdir(test)
+        f = open(testFileName, "w")
+        f.write(localTemplate)
+        f.close()
+        os.chdir("..")
+
+    ignoreFile.close()
+    os.chdir(original_dir)
+
 def populate_blacklist():
     blacklist = []
     f = open("blacklist.txt", "r")
@@ -165,28 +212,60 @@ def populate_blacklist():
     f.close()
     return blacklist
 
+
+# Main function start
+
+# Get source directory (should be the location of this __file__)
+original_dir = os.getcwd()
+template_source_dir = os.path.dirname(os.path.realpath(__file__))
+os.chdir(template_source_dir)
+
 parser = ArgumentParser()
 parser.add_argument("-o", "--output", dest="output",
                     help="Directory to write Output", metavar="OUTPUT")
 parser.add_argument("-b", "--balsam", dest="balsam",
                     help="Location of balsam tool", metavar="BALSAM")
 parser.add_argument("-i", "--input", dest="input",
-                    help="Location of source directory", metavar="INPUT")                                  
+                    help="Location of source directory", metavar="INPUT")
+parser.add_argument("-l", "--lancelot", dest="lancelot",
+                    help="Build Lancelot tests template", action="store_const",
+                    const=True, default=False)
 args = parser.parse_args()
-
-copy_template_files(args.output)
 
 blacklist = populate_blacklist()
 # Generate QML from GLTF2 files
 models = generate_tests(args.input, blacklist)
-for model in models:
-    cmd = args.balsam + " -o " + args.output + os.path.sep + model + os.path.sep + " " + models[model]
-    os.system(cmd)
 
-# Generate QML Viewer code
-tests = generate_test_list(args.output, blacklist)
-generate_test_model(args.output, tests)
-generate_qrc_files(args.output, blacklist)
-generate_ios_bundle_data(args.output, blacklist)
+# create output folder if it doesn't exist
+if not os.path.exists(args.output):
+    os.makedirs(args.output)
 
-#print(tests)
+if not args.lancelot:
+    # Generate test viewer application
+    copy_template_files(args.output)
+
+    for model in models:
+        cmd = args.balsam + " -o " + args.output + os.path.sep + model + os.path.sep + " " + models[model]
+        os.system(cmd)
+
+    # Generate QML Viewer code
+    tests = generate_test_list(args.output, blacklist)
+    generate_test_model(args.output, tests)
+    generate_qrc_files(args.output, blacklist)
+    generate_ios_bundle_data(args.output, blacklist)
+else:
+    # Generate Lancelot project instead
+    # Copy lancelot project template
+    copy_lancelot_template_files(args.output)
+
+    # Generate QML files for Models
+    testFolder = args.output + os.path.sep + "data" + os.path.sep
+    for model in models:
+        cmd = args.balsam + " -o " + testFolder + model + os.path.sep + " " + models[model]
+        os.system(cmd)
+
+    # Generate Lancelot tests for each project
+    tests = generate_test_list(testFolder, blacklist)
+    generate_lancelot_tests(testFolder, tests)
+
+os.chdir(original_dir)
