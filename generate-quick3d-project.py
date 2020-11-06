@@ -4,6 +4,7 @@ from shutil import copy2
 from shutil import copytree
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
+import json
 
 #./generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
 
@@ -168,6 +169,11 @@ def generate_lancelot_tests(output_dir, tests):
     templateString = templateFile.read()
     templateFile.close()
 
+    # Load settings file
+    settingsFile = open("lancelot_settings.json", "r")
+    settings = json.loads(settingsFile.read())
+    settingsFile.close()
+
     original_dir = os.getcwd()
     os.chdir(output_dir)
 
@@ -185,10 +191,15 @@ def generate_lancelot_tests(output_dir, tests):
         localTemplate = localTemplate.replace("###", "\"" + componentName + "\"")
 
         # scale (settings file)
-        localTemplate = localTemplate.replace("@@@", "Qt.vector3d(1, 1, 1)")
+        scale = 1
+        yPos = 0
+        if test in settings:
+            scale = settings[test]['scale']
+            yPos = settings[test]['y']
+        localTemplate = localTemplate.replace("@@@", "Qt.vector3d(" + str(scale) + ", " + str(scale) + ", " + str(scale) + ")")
 
         # y position (settings file)
-        localTemplate = localTemplate.replace("$$$", "0")
+        localTemplate = localTemplate.replace("$$$", str(yPos))
 
         # write test file
         componentName = componentName.replace(".qml", "")

@@ -1,0 +1,317 @@
+{
+    "2CylinderEngine": {
+        "scale": 1,
+        "y": 0,
+        "animated": false
+    },
+    "AlphaBlendModeTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "AnimatedCube": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "AnimatedMorphCube": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "AnimatedMorphSphere": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "AnimatedTriangle": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "AntiqueCamera": {
+        "scale": 100,
+        "y": -360,
+        "animated": false
+    },
+    "Avocado": {
+        "scale": 10000,
+        "y": -325,
+        "animated": false
+    },
+    "BarramundiFish": {
+        "scale": 1000,
+        "y": -130,
+        "animated": false
+    },
+    "BoomBox": {
+        "scale": 10000,
+        "y": 0,
+        "animated": false
+    },
+    "BoomBoxWithAxes": {
+        "scale": 10000,
+        "y": 0,
+        "animated": false
+    },
+    "Box": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "BoxAnimated": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "BoxInterleaved": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "BoxTextured": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "BoxTexturedNonPowerOfTwo": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "BoxVertexColors": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "BrainStem": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "Buggy": {
+        "scale": 1,
+        "y": 0,
+        "animated": false
+    },
+    "Cameras": {
+        "scale": 1000,
+        "y": 0,
+        "animated": false
+    },
+    "CesiumMan": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "CesiumMilkTruck": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "ClearCoatTest": {
+        "scale": 50,
+        "y": 0,
+        "animated": false
+    },
+    "Corset": {
+        "scale": 10000,
+        "y": -255,
+        "animated": false
+    },
+    "Cube": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "DamagedHelmet": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "Duck": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "EnvironmentTest": {
+        "scale": 50,
+        "y": -370,
+        "animated": false
+    },
+    "FlightHelmet": {
+        "scale": 800,
+        "y": -300,
+        "animated": false
+    },
+    "Fox": {
+        "scale": 1000,
+        "y": 0,
+        "animated": true
+    },
+    "GearboxAssy": {
+        "scale": 1,
+        "y": 0,
+        "animated": false
+    },
+    "InterpolationTest": {
+        "scale": 50,
+        "y": 0,
+        "animated": true
+    },
+    "Lantern": {
+        "scale": 10,
+        "y": -100,
+        "animated": false
+    },
+    "MetalRoughSpheres": {
+        "scale": 100,
+        "y": -80,
+        "animated": false
+    },
+    "MetalRoughSpheresNoTextures": {
+        "scale": 20000,
+        "y": 0,
+        "animated": false
+    },
+    "MorphPrimitivesTest": {
+        "scale": 1000,
+        "y": -60,
+        "animated": false
+    },
+    "MultiUVTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "NormalTangentMirrorTest": {
+        "scale": 200,
+        "y": 0,
+        "animated": false
+    },
+    "NormalTangentTest": {
+        "scale": 200,
+        "y": 0,
+        "animated": false
+    },
+    "OrientationTest": {
+        "scale": 10,
+        "y": 0,
+        "animated": false
+    },
+    "ReciprocatingSaw": {
+        "scale": 1,
+        "y": 0,
+        "animated": false
+    },
+    "RiggedFigure": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "RiggedSimple": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "SciFiHelmet": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "SimpleMeshes": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "SimpleMorph": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "SimpleSkin": {
+        "scale": 100,
+        "y": 0,
+        "animated": true
+    },
+    "SimpleSparseAccessor": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "SpecGlossVsMetalRough": {
+        "scale": 1000,
+        "y": 0,
+        "animated": false
+    },
+    "Sponza": {
+        "scale": 1000,
+        "y": -1140,
+        "animated": false
+    },
+    "Suzanne": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TextureCoordinateTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TextureSettingsTest": {
+        "scale": 80,
+        "y": 0,
+        "animated": false
+    },
+    "TextureTransformMultiTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TextureTransformTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TransmissionTest": {
+        "scale": 500,
+        "y": 0,
+        "animated": false
+    },
+    "Triangle": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TriangleWithoutIndices": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "TwoSidedPlane": {
+        "scale": 100,
+        "y": -130,
+        "animated": false
+    },
+    "UnlitTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "VC": {
+        "scale": 100,
+        "y": -300,
+        "animated": true
+    },
+    "VertexColorTest": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
+    "WaterBottle": {
+        "scale": 1000,
+        "y": 0,
+        "animated": false
+    }
+}
