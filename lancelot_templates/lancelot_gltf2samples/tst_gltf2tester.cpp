@@ -259,4 +259,4 @@ int main(int argc, char *argv[])
     return _realmain(argc, argv);
 }
 
-#include "tst_glTF2Tester.moc"
+#include "tst_gltf2tester.moc"
