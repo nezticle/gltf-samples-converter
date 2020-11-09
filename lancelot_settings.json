@@ -85,8 +85,8 @@
         "animated": false
     },
     "BrainStem": {
-        "scale": 100,
-        "y": 0,
+        "scale": 17,
+        "y": -17,
         "animated": true
     },
     "Buggy": {
@@ -100,7 +100,7 @@
         "animated": false
     },
     "CesiumMan": {
-        "scale": 100,
+        "scale": 17,
         "y": 0,
         "animated": true
     },
@@ -145,8 +145,8 @@
         "animated": false
     },
     "Fox": {
-        "scale": 1000,
-        "y": 0,
+        "scale": 2,
+        "y": -50,
         "animated": true
     },
     "GearboxAssy": {
@@ -205,12 +205,12 @@
         "animated": false
     },
     "RiggedFigure": {
-        "scale": 100,
+        "scale": 30,
         "y": 0,
         "animated": true
     },
     "RiggedSimple": {
-        "scale": 100,
+        "scale": 8,
         "y": 0,
         "animated": true
     },
