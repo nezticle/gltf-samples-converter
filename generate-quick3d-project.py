@@ -187,15 +187,32 @@ def generate_lancelot_tests(output_dir, tests):
         # get file name
         componentName = tests[test].split("/")[-1:][0]
 
+        scale = 1
+        yPos = 0
+        isAnimated = False
+        if test in settings:
+            scale = settings[test]['scale']
+            yPos = settings[test]['y']
+            isAnimated = settings[test]['animated']
+
+        if isAnimated:
+            # need to modify the original file to not animate during the test
+            # replace "running: true" with "running: false" which should
+            # work because the only instances of this in generate files are for
+            # timeline animations
+            originalFile = open(tests[test], "r")
+            contents = originalFile.read()
+            originalFile.close()
+            contents = contents.replace("running: true", "running: false")
+            # TODO: maybe also set a new starting frame
+            originalFile = open(tests[test], "w")
+            originalFile.write(contents)
+            originalFile.close()
+
         # source file (same folder)
         localTemplate = localTemplate.replace("###", "\"" + componentName + "\"")
 
         # scale (settings file)
-        scale = 1
-        yPos = 0
-        if test in settings:
-            scale = settings[test]['scale']
-            yPos = settings[test]['y']
         localTemplate = localTemplate.replace("@@@", "Qt.vector3d(" + str(scale) + ", " + str(scale) + ", " + str(scale) + ")")
 
         # y position (settings file)

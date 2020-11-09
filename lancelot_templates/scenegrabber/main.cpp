@@ -50,7 +50,7 @@
 #define SCENE_STABLE_TIME 200
 
 // Give up after SCENE_TIMEOUT ms
-#define SCENE_TIMEOUT     6000
+#define SCENE_TIMEOUT     10000
 
 //#define GRABBERDEBUG
 
