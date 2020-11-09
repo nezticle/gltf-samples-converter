@@ -204,7 +204,7 @@ def generate_lancelot_tests(output_dir, tests):
             contents = originalFile.read()
             originalFile.close()
             contents = contents.replace("running: true", "running: false")
-            # TODO: maybe also set a new starting frame
+            contents = contents.replace("currentFrame: 0", "currentFrame: 500")
             originalFile = open(tests[test], "w")
             originalFile.write(contents)
             originalFile.close()
