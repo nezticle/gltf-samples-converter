@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from shutil import copy2
-from shutil import copytree
+from distutils.dir_util import copy_tree
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
 import json
@@ -46,7 +46,7 @@ def copy_template_files(output_dir):
     copy2("templates/viewer.qrc", output_dir)
 
 def copy_lancelot_template_files(output_dir):
-    copytree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir, dirs_exist_ok=True)
+    copy_tree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir)
     copy2("templates/environment.hdr", output_dir + os.path.sep + "data")
 
 def generate_qrc_files(output_dir, blacklist):
