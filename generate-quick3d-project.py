@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import subprocess
 import os
 from shutil import copy2
 from distutils.dir_util import copy_tree
@@ -240,6 +241,12 @@ def populate_blacklist():
     f.close()
     return blacklist
 
+# Run a command and print stderr on error (non-zero return value)
+def run_command(cmd):
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print("Command failed: " + " ".join(cmd))
+        print(result.stderr.decode("utf-8").strip())
 
 # Main function start
 
@@ -273,8 +280,9 @@ if not args.lancelot:
     copy_template_files(args.output)
 
     for model in models:
-        cmd = args.balsam + " -o " + args.output + os.path.sep + model + os.path.sep + " " + models[model]
-        os.system(cmd)
+        output_path = args.output + os.path.sep + model + os.path.sep
+        cmd = [args.balsam, "-o", output_path, models[model]]
+        run_command(cmd)
 
     # Generate QML Viewer code
     tests = generate_test_list(args.output, blacklist)
@@ -289,8 +297,9 @@ else:
     # Generate QML files for Models
     testFolder = args.output + os.path.sep + "data" + os.path.sep
     for model in models:
-        cmd = args.balsam + " -o " + testFolder + model + os.path.sep + " " + models[model]
-        os.system(cmd)
+        output_path = testFolder + model + os.path.sep
+        cmd = [args.balsam, "-o", output_path, models[model]]
+        run_command(cmd)
 
     # Generate Lancelot tests for each project
     tests = generate_test_list(testFolder, blacklist)
