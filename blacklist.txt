@@ -1,3 +1,4 @@
 # blacklist of projects to not generate
 Cameras
 GearboxAssy
+MorphPrimitivesTest
