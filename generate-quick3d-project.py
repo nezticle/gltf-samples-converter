@@ -6,6 +6,7 @@ from distutils.dir_util import copy_tree
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
 import json
+from multiprocessing import Pool
 
 #./generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
 
@@ -279,10 +280,12 @@ if not args.lancelot:
     # Generate test viewer application
     copy_template_files(args.output)
 
+    cmds = []
     for model in models:
         output_path = args.output + os.path.sep + model + os.path.sep
         cmd = [args.balsam, "-o", output_path, models[model]]
-        run_command(cmd)
+        cmds.append(cmd)
+    Pool().map(run_command, cmds)
 
     # Generate QML Viewer code
     tests = generate_test_list(args.output, blacklist)
@@ -296,10 +299,12 @@ else:
 
     # Generate QML files for Models
     testFolder = args.output + os.path.sep + "data" + os.path.sep
+    cmds = []
     for model in models:
         output_path = testFolder + model + os.path.sep
         cmd = [args.balsam, "-o", output_path, models[model]]
-        run_command(cmd)
+        cmds.append(cmd)
+    Pool().map(run_command, cmds)
 
     # Generate Lancelot tests for each project
     tests = generate_test_list(testFolder, blacklist)
