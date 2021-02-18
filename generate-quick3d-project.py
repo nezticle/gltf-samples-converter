@@ -250,64 +250,64 @@ def run_command(cmd):
         print(result.stderr.decode("utf-8").strip())
 
 # Main function start
+if __name__ == '__main__':
+    # Get source directory (should be the location of this __file__)
+    original_dir = os.getcwd()
+    template_source_dir = os.path.dirname(os.path.realpath(__file__))
+    os.chdir(template_source_dir)
 
-# Get source directory (should be the location of this __file__)
-original_dir = os.getcwd()
-template_source_dir = os.path.dirname(os.path.realpath(__file__))
-os.chdir(template_source_dir)
+    parser = ArgumentParser()
+    parser.add_argument("-o", "--output", dest="output",
+                        help="Directory to write Output", metavar="OUTPUT")
+    parser.add_argument("-b", "--balsam", dest="balsam",
+                        help="Location of balsam tool", metavar="BALSAM")
+    parser.add_argument("-i", "--input", dest="input",
+                        help="Location of source directory", metavar="INPUT")
+    parser.add_argument("-l", "--lancelot", dest="lancelot",
+                        help="Build Lancelot tests template", action="store_const",
+                        const=True, default=False)
+    args = parser.parse_args()
 
-parser = ArgumentParser()
-parser.add_argument("-o", "--output", dest="output",
-                    help="Directory to write Output", metavar="OUTPUT")
-parser.add_argument("-b", "--balsam", dest="balsam",
-                    help="Location of balsam tool", metavar="BALSAM")
-parser.add_argument("-i", "--input", dest="input",
-                    help="Location of source directory", metavar="INPUT")
-parser.add_argument("-l", "--lancelot", dest="lancelot",
-                    help="Build Lancelot tests template", action="store_const",
-                    const=True, default=False)
-args = parser.parse_args()
+    blacklist = populate_blacklist()
+    # Generate QML from GLTF2 files
+    models = generate_tests(args.input, blacklist)
 
-blacklist = populate_blacklist()
-# Generate QML from GLTF2 files
-models = generate_tests(args.input, blacklist)
+    # create output folder if it doesn't exist
+    if not os.path.exists(args.output):
+        os.makedirs(args.output)
 
-# create output folder if it doesn't exist
-if not os.path.exists(args.output):
-    os.makedirs(args.output)
+    if not args.lancelot:
+        # Generate test viewer application
+        copy_template_files(args.output)
 
-if not args.lancelot:
-    # Generate test viewer application
-    copy_template_files(args.output)
+        cmds = []
+        for model in models:
+            output_path = args.output + os.path.sep + model + os.path.sep
+            cmd = [args.balsam, "-o", output_path, models[model]]
+            cmds.append(cmd)
+        Pool().map(run_command, cmds)
 
-    cmds = []
-    for model in models:
-        output_path = args.output + os.path.sep + model + os.path.sep
-        cmd = [args.balsam, "-o", output_path, models[model]]
-        cmds.append(cmd)
-    Pool().map(run_command, cmds)
+        # Generate QML Viewer code
+        tests = generate_test_list(args.output, blacklist)
+        generate_test_model(args.output, tests)
+        generate_qrc_files(args.output, blacklist)
+        generate_ios_bundle_data(args.output, blacklist)
+    else:
+        # Generate Lancelot project instead
+        # Copy lancelot project template
+        copy_lancelot_template_files(args.output)
 
-    # Generate QML Viewer code
-    tests = generate_test_list(args.output, blacklist)
-    generate_test_model(args.output, tests)
-    generate_qrc_files(args.output, blacklist)
-    generate_ios_bundle_data(args.output, blacklist)
-else:
-    # Generate Lancelot project instead
-    # Copy lancelot project template
-    copy_lancelot_template_files(args.output)
+        # Generate QML files for Models
+        testFolder = args.output + os.path.sep + "data" + os.path.sep
+        cmds = []
+        for model in models:
+            output_path = testFolder + model + os.path.sep
+            cmd = [args.balsam, "-o", output_path, models[model]]
+            cmds.append(cmd)
+        Pool().map(run_command, cmds)
 
-    # Generate QML files for Models
-    testFolder = args.output + os.path.sep + "data" + os.path.sep
-    cmds = []
-    for model in models:
-        output_path = testFolder + model + os.path.sep
-        cmd = [args.balsam, "-o", output_path, models[model]]
-        cmds.append(cmd)
-    Pool().map(run_command, cmds)
+        # Generate Lancelot tests for each project
+        tests = generate_test_list(testFolder, blacklist)
+        generate_lancelot_tests(testFolder, tests)
 
-    # Generate Lancelot tests for each project
-    tests = generate_test_list(testFolder, blacklist)
-    generate_lancelot_tests(testFolder, tests)
-
-os.chdir(original_dir)
+    os.chdir(original_dir)
