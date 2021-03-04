@@ -2,3 +2,4 @@
 Cameras
 GearboxAssy
 MorphPrimitivesTest
+MorphStressTest
