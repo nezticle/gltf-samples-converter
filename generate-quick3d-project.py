@@ -31,6 +31,7 @@ def generate_ios_bundle_data(output_dir, blacklist):
             continue
         if model in blacklist:
             continue
+        model = model.replace(' ', '_')
 
         f.write("\\\n\t\t$$PWD/" + model + "/ ")
 
