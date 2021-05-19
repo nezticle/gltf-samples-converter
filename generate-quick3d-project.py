@@ -192,10 +192,12 @@ def generate_lancelot_tests(output_dir, tests):
 
         scale = 1
         yPos = 0
+        xPos = 0
         isAnimated = False
         if test in settings:
             scale = settings[test]['scale']
-            yPos = settings[test]['y']
+            xPos = settings[test].get('x', 0)
+            yPos = settings[test].get('y', 0)
             isAnimated = settings[test]['animated']
 
         if isAnimated:
@@ -218,8 +220,9 @@ def generate_lancelot_tests(output_dir, tests):
         # scale (settings file)
         localTemplate = localTemplate.replace("@@@", "Qt.vector3d(" + str(scale) + ", " + str(scale) + ", " + str(scale) + ")")
 
-        # y position (settings file)
-        localTemplate = localTemplate.replace("$$$", str(yPos))
+        # x,y position (settings file)
+        localTemplate = localTemplate.replace("$x$", str(xPos))
+        localTemplate = localTemplate.replace("$y$", str(yPos))
 
         # write test file
         componentName = componentName.replace(".qml", "")

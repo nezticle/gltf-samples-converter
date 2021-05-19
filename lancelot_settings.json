@@ -74,6 +74,11 @@
         "y": 0,
         "animated": false
     },
+    "Box_With_Spaces": {
+        "scale": 100,
+        "y": 0,
+        "animated": false
+    },
     "BoxTexturedNonPowerOfTwo": {
         "scale": 300,
         "y": 0,
@@ -85,8 +90,8 @@
         "animated": false
     },
     "BrainStem": {
-        "scale": 17,
-        "y": -17,
+        "scale": 280,
+        "y": -280,
         "animated": true
     },
     "Buggy": {
@@ -100,8 +105,8 @@
         "animated": false
     },
     "CesiumMan": {
-        "scale": 17,
-        "y": 0,
+        "scale": 300,
+        "y": -300,
         "animated": true
     },
     "CesiumMilkTruck": {
@@ -145,8 +150,8 @@
         "animated": false
     },
     "Fox": {
-        "scale": 2,
-        "y": -50,
+        "scale": 5,
+        "y": -250,
         "animated": true
     },
     "GearboxAssy": {
@@ -167,6 +172,11 @@
     "MetalRoughSpheres": {
         "scale": 70,
         "y": 10,
+        "animated": false
+    },
+    "MaterialsVariantsShoe": {
+        "scale": 2000,
+        "y": -200,
         "animated": false
     },
     "MetalRoughSpheresNoTextures": {
@@ -205,18 +215,28 @@
         "animated": false
     },
     "RiggedFigure": {
-        "scale": 30,
-        "y": 0,
+        "scale": 300,
+        "y": -300,
         "animated": true
     },
     "RiggedSimple": {
-        "scale": 8,
-        "y": 0,
+        "scale": 50,
+        "y": -50,
         "animated": true
     },
     "SciFiHelmet": {
         "scale": 200,
         "y": 0,
+        "animated": false
+    },
+    "SheenChair": {
+        "scale": 500,
+        "y": -250,
+        "animated": false
+    },
+    "SheenCloth": {
+        "scale": 10000,
+        "y": -200,
         "animated": false
     },
     "SimpleMeshes": {
@@ -230,8 +250,8 @@
         "animated": true
     },
     "SimpleSkin": {
-        "scale": 100,
-        "y": 0,
+        "scale": 200,
+        "y": -200,
         "animated": true
     },
     "SimpleSparseAccessor": {
@@ -242,6 +262,11 @@
     "SpecGlossVsMetalRough": {
         "scale": 1800,
         "y": 0,
+        "animated": false
+    },
+    "SpecularTest": {
+        "scale": 800,
+        "x": 145,
         "animated": false
     },
     "Sponza": {
@@ -259,6 +284,16 @@
         "y": 0,
         "animated": false
     },
+    "TextureEncodingTest": {
+        "scale": 60,
+        "y": 0,
+        "animated": false
+    },
+    "TextureLinearInterpolationTest": {
+        "scale": 100,
+        "y": -50,
+        "animated": false
+    },
     "TextureSettingsTest": {
         "scale": 60,
         "y": 50,
@@ -274,9 +309,14 @@
         "y": 0,
         "animated": false
     },
+    "TransmissionRoughnessTest": {
+        "scale": 600,
+        "x": 30,
+        "animated": false
+    },
     "TransmissionTest": {
-        "scale": 550,
-        "y": 50,
+        "scale": 600,
+        "x": 60,
         "animated": false
     },
     "Triangle": {

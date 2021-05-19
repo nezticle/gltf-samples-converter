@@ -3,11 +3,11 @@ import QtQuick3D
 
 Rectangle {
     id: window
-	width: 640
-	height: 480
+    width: 640
+    height: 480
     color: "black"
 
-	Node {
+    Node {
         id: sceneRoot
 
         PerspectiveCamera {
@@ -19,14 +19,15 @@ Rectangle {
             id: loadedItem
             source: ###
             scale: @@@
-            y: $$$
+            x: $x$
+            y: $y$
         }
     }
 
     View3D {
         anchors.fill: parent
         importScene: sceneRoot
-		environment: SceneEnvironment {
+        environment: SceneEnvironment {
             lightProbe: Texture {
                 source: "../environment.hdr"
             }
