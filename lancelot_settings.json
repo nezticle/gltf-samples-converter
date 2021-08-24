@@ -34,6 +34,10 @@
         "y": -360,
         "animated": false
     },
+    "AttenuationTest": {
+        "scale": 35,
+        "animated": false
+    },
     "Avocado": {
         "scale": 10000,
         "y": -325,
@@ -74,7 +78,7 @@
         "y": 0,
         "animated": false
     },
-    "Box_With_Spaces": {
+    "Box With Spaces": {
         "scale": 100,
         "y": 0,
         "animated": false
@@ -134,6 +138,10 @@
         "y": 50,
         "animated": false
     },
+    "DragonAttenuation": {
+        "scale": 120,
+        "animated": false
+    },
     "Duck": {
         "scale": 300,
         "y": -250,
@@ -159,9 +167,19 @@
         "y": 0,
         "animated": false
     },
+    "GlamVelvetSofa": {
+        "scale": 300,
+        "y": -200,
+        "animated": false
+    },
     "InterpolationTest": {
         "scale": 50,
         "y": -150,
+        "animated": true
+    },
+    "IridescentDishWithOlives": {
+        "scale": 1000,
+        "y": -200,
         "animated": true
     },
     "Lantern": {
@@ -213,6 +231,12 @@
         "scale": 3,
         "y": 0,
         "animated": false
+    },
+    "RecursiveSkeletons": {
+        "scale": 300,
+        "x": -8000,
+        "y": -35000,
+        "animated": true
     },
     "RiggedFigure": {
         "scale": 300,
@@ -307,6 +331,11 @@
     "TextureTransformTest": {
         "scale": 200,
         "y": 0,
+        "animated": false
+    },
+    "ToyCar": {
+        "scale": 15000,
+        "y": -200,
         "animated": false
     },
     "TransmissionRoughnessTest": {
