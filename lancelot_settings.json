@@ -207,6 +207,9 @@
         "y": -60,
         "animated": false
     },
+    "MosquitoInAmber": {
+        "scale": 5000
+    },
     "MultiUVTest": {
         "scale": 200,
         "y": 0,
@@ -297,6 +300,10 @@
         "scale": 1000,
         "y": -1140,
         "animated": false
+    },
+    "StainedGlassLamp": {
+        "scale": 1000,
+        "y": -300
     },
     "Suzanne": {
         "scale": 200,
