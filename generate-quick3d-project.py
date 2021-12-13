@@ -96,6 +96,8 @@ def generate_qrc_files(output_dir, blacklist):
         f.write("\tRESOURCES += \\\n")
 
     for qrc in qrcList:
+        if ' ' in qrc:
+            qrc = '"' + qrc + '"' 
         f.write("\t\t" + qrc + " \\\n")
     f.write("} #!ios\n")
     f.close()
