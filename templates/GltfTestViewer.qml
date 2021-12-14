@@ -17,18 +17,25 @@ Window {
 	Node {
         id: sceneRoot
 
-        PerspectiveCamera {
-            id: camera
-            z: 600
-            function resetView() {
-                position = Qt.vector3d(0, 0, 600)
-                camera.eulerRotation = Qt.vector3d(0, 0, 0)
+        Node {
+            id: originNode
+            PerspectiveCamera {
+                id: cameraNode
+                z: 600
+                clipNear: 0.1
+                clipFar: 1000
+                function resetView() {
+                    originNode.position = Qt.vector3d(0, 0, 0)
+                    cameraNode.position = Qt.vector3d(0, 0, 600)
+                    cameraNode.eulerRotation = Qt.vector3d(0, 0, 0)
+                }
             }
         }
 
         Loader3D {
             id: loadedItem
             source: testsModel.get(listView.currentIndex).source
+
         }
     }
 
@@ -72,184 +79,11 @@ Window {
             }
             backgroundMode: SceneEnvironment.SkyBox
         }
-
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            propagateComposedEvents: true
-            onEntered: {
-                wasdController.focus = true
-                wasdController.keysEnabled = true
-                wasdController.mouseEnabled = true
-            }
-        }
-        Button {
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            text: "[ ]"
-            onClicked: {
-                window.isFullscreen = !window.isFullscreen
-            }
-        } 
     }
 
-
-    WasdController {
-        id: wasdController
-        controlledObject: camera
-        keysEnabled: true
-    }
-
-    Item {
-        id: mobileWasd
-        visible: isMobile
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: parent.width * 0.2
-        height: parent.height * 0.2
-
-        property real buttonWidth: width / 3 - 3 * 2
-        property real buttonHeight: height / 2 - 2 * 2
-
-        Grid {
-            anchors.fill: parent
-            rows: 2
-            columns: 3
-            spacing: 2
-
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "Down"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.downPressed()
-                    }
-                    onReleased: {
-                        wasdController.downReleased()
-                    }
-                    onExited: {
-                        wasdController.downReleased()
-                    }
-                }
-            }
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "W"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.forwardPressed()
-                    }
-                    onReleased: {
-                        wasdController.forwardReleased()
-                    }
-                    onExited: {
-                        wasdController.forwardReleased()
-                    }
-                }
-            }
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "Up"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.upPressed()
-                    }
-                    onReleased: {
-                        wasdController.upReleased()
-                    }
-                    onExited: {
-                        wasdController.upReleased()
-                    }
-                }
-            }
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "A"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.leftPressed()
-                    }
-                    onReleased: {
-                        wasdController.leftReleased()
-                    }
-                    onExited: {
-                        wasdController.leftReleased()
-                    }
-                }
-            }
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "S"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.backPressed()
-                    }
-                    onReleased: {
-                        wasdController.backReleased()
-                    }
-                    onExited: {
-                        wasdController.backReleased()
-                    }
-                }
-            }
-            Rectangle {
-                width: mobileWasd.buttonWidth
-                height: mobileWasd.buttonHeight
-                radius: 10
-                color: "#55FFFFFF"
-                Text {
-                    anchors.centerIn: parent
-                    text: "D"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        wasdController.rightPressed()
-                    }
-                    onReleased: {
-                        wasdController.rightReleased()
-                    }
-                    onExited: {
-                        wasdController.rightReleased()
-                    }
-                }
-            }
-        }
+    OrbitCameraController {
+        origin: originNode
+        camera: cameraNode
     }
 
     Rectangle {
@@ -314,7 +148,7 @@ Window {
                 }
             }
             Button {
-                onClicked: camera.resetView()
+                onClicked: cameraNode.resetView()
                 text: "Recenter view"
             }
             Button {

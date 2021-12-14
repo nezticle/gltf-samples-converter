@@ -46,6 +46,7 @@ def copy_template_files(output_dir):
     copy2("templates/main.cpp", output_dir)
     copy2("templates/GltfTestViewer.qml", output_dir)
     copy2("templates/gltf2TestViewer.pro", output_dir)
+    copy2("templates/OrbitCameraController.qml", output_dir)
     copy2("templates/viewer.qrc", output_dir)
 
 def copy_lancelot_template_files(output_dir):
