@@ -23,6 +23,7 @@ def generate_ios_bundle_data(output_dir, blacklist):
     f.write("\\\n\t\t$$PWD/GltfTestViewer.qml ")
     f.write("\\\n\t\t$$PWD/GltfTestsModel.qml ")
     f.write("\\\n\t\t$$PWD/environment.hdr ")
+    f.write("\\\n\t\t$$PWD/OrbitCameraController.qml")
 
     # Get a list of all resources that need to by copied into the data_bundle
     for model in sorted(os.listdir(".")):
@@ -31,9 +32,11 @@ def generate_ios_bundle_data(output_dir, blacklist):
             continue
         if model in blacklist:
             continue
-        model = model.replace(' ', '_')
-
-        f.write("\\\n\t\t$$PWD/" + model + "/ ")
+        #model = model.replace(' ', '_')
+        if ' ' in model:
+            f.write("\\\n\t\t\"$$PWD/" + model + "/\"")
+        else:
+            f.write("\\\n\t\t$$PWD/" + model + "/ ")
 
     f.write("\n\tQMAKE_BUNDLE_DATA += ios_models\n")
 
