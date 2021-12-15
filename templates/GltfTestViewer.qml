@@ -27,7 +27,7 @@ Window {
                 function resetView() {
                     originNode.position = Qt.vector3d(0, 0, 0)
                     cameraNode.position = Qt.vector3d(0, 0, 600)
-                    cameraNode.eulerRotation = Qt.vector3d(0, 0, 0)
+                    originNode.eulerRotation = Qt.vector3d(0, 0, 0)
                 }
             }
         }
