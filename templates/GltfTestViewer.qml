@@ -36,8 +36,6 @@ Window {
                     originNode.position = loadedItem.boundsCenter
                     cameraNode.position = Qt.vector3d(0, 0, loadedItem.boundsDiameter * 1.5)
                     originNode.eulerRotation = Qt.vector3d(0, 0, 0)
-                    console.log("Bounds changed: ", loadedItem.bounds.minimum, loadedItem.bounds.maximum,
-                                                " center:", loadedItem.boundsCenter, "diameter:", loadedItem.boundsDiameter)
                 }
             }
         }
