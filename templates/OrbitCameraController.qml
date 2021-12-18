@@ -61,7 +61,7 @@ Item {
             } else if (distance < 100) {
                 camera.clipNear = 0.1
                 camera.clipFar = 1000
-            } else if (distance < 1000) {
+            } else {
                 camera.clipNear = 1
                 camera.clipFar = 10000
             }
@@ -138,8 +138,6 @@ Item {
         onWheel: event => {
             let delta = -event.angleDelta.y * 0.01;
             camera.z += camera.z * 0.1 * delta
-            //console.log(event.angleDelta.y)
-            //camera.z -= event.angleDelta.y * 0.1
         }
     }
 
