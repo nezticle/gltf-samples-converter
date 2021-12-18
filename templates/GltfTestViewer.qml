@@ -154,30 +154,6 @@ Window {
         id: testsModel
     }
 
-    Component {
-        id: testDelegate
-        Item {
-            id: wrapper
-            width: 200; height: 55
-            Text {
-                text: name
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: wrapper.ListView.view.currentIndex = index
-            }
-        }
-    }
-
-    Component {
-        id: highlightBar
-        Rectangle {
-            width: 200; height: 50
-            color: "limegreen"
-            y: listView.currentItem.y;
-        }
-    }
-
     View3D {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -197,27 +173,42 @@ Window {
         camera: cameraNode
     }
 
-    Rectangle {
+    Pane {
         id: selectionRect
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         visible: !window.isFullscreen
-        width: !window.isFullscreen ? 200 : 0
+        width: !window.isFullscreen ? 250 : 0
         ColumnLayout {
             anchors.fill: parent
             Button {
                 onClicked: cameraNode.resetView()
                 text: "Recenter view"
+                Layout.alignment: Qt.AlignCenter
             }
             ListView {
                 id: listView
                 width: parent.width
                 ColumnLayout.fillHeight: true
                 model: testsModel
-                delegate: testDelegate
-                highlight: highlightBar
-                highlightFollowsCurrentItem: true
+                delegate: Item {
+                    width: ListView.view.width
+                    height: modelLabel.implicitHeight
+                    Label {
+                        id: modelLabel
+                        text: name
+                        font.pointSize: 18
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: listView.currentIndex = index
+                    }
+                }
+                ScrollBar.vertical: ScrollBar { }
+                highlight: Rectangle {
+                    color: palette.highlight
+                }
                 clip: true
              }
         }
