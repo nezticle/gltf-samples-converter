@@ -166,11 +166,10 @@ Window {
             }
             backgroundMode: SceneEnvironment.SkyBox
         }
-    }
-
-    OrbitCameraController {
-        origin: originNode
-        camera: cameraNode
+        OrbitCameraController {
+            origin: originNode
+            camera: cameraNode
+        }
     }
 
     Pane {
