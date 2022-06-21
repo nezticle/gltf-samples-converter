@@ -196,8 +196,9 @@ bool tst_glTF2Tester::renderAndGrab(const QString& qmlFile, const QStringList& e
     grabber.setProcessChannelMode(QProcess::ForwardedErrorChannel);
     QString cmd = QCoreApplication::applicationDirPath() + "/qmlscenegrabber";
     QStringList args = extraArgs;
-    QString tmpfile = usePipe ? QString("-") : QString("%1/qmlscenegrabber-%2-out.ppm")
-                                .arg(QDir::tempPath()).arg(QCoreApplication::applicationPid());
+
+    QString tmpfile = usePipe ? QString("-") : QDir::tempPath() + QString("/qmlscenegrabber-") + QString::number(QCoreApplication::applicationPid()) 
+                                                + ("-out.ppm");
     args << qmlFile << "-o" << tmpfile;
     grabber.start(cmd, args, QIODevice::ReadOnly);
     grabber.waitForFinished(grabberTimeout);
