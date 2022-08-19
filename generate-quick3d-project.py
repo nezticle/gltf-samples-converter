@@ -8,45 +8,12 @@ import xml.etree.cElementTree as ET
 import json
 from multiprocessing import Pool
 
-#./generate-quick3d-project.py -o Q:\Code\temp -b Q:\Code\qt5-5.15-msvc2019\qtbase\bin\balsam.exe -i 2.0
-
-def generate_ios_bundle_data(output_dir, blacklist):
-    original_dir = os.getcwd()
-    os.chdir(output_dir)
-
-    # Open the .pro file to append the build_data commands
-    f = open("gltf2TestViewer.pro", "a")
-    f.write("ios {\n")
-    f.write("\tios_models.files = ")
-
-    # Add the viewer files
-    f.write("\\\n\t\t$$PWD/GltfTestViewer.qml ")
-    f.write("\\\n\t\t$$PWD/GltfTestsModel.qml ")
-    f.write("\\\n\t\t$$PWD/environment.hdr ")
-
-    # Get a list of all resources that need to by copied into the data_bundle
-    for model in sorted(os.listdir(".")):
-        # models will only be in folders
-        if not os.path.isdir(model):
-            continue
-        if model in blacklist:
-            continue
-        model = model.replace(' ', '_')
-
-        f.write("\\\n\t\t$$PWD/" + model + "/ ")
-
-    f.write("\n\tQMAKE_BUNDLE_DATA += ios_models\n")
-
-    f.write("} #ios\n")
-    f.close()
-    os.chdir(original_dir)
-
 def copy_template_files(output_dir):
-    copy2("templates/environment.hdr", output_dir)
+    copy2("templates/CMakeLists.txt", output_dir)
     copy2("templates/main.cpp", output_dir)
     copy2("templates/GltfTestViewer.qml", output_dir)
-    copy2("templates/gltf2TestViewer.pro", output_dir)
-    copy2("templates/viewer.qrc", output_dir)
+    copy2("templates/pathhelper.h", output_dir)
+    copy2("templates/pathhelper.cpp", output_dir)
 
 def copy_lancelot_template_files(output_dir):
     copy_tree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir)
@@ -147,21 +114,18 @@ def generate_test_list(output_dir, blacklist):
     os.chdir(original_dir)
     return tests
 
-def generate_test_model(output_dir, tests):
+def generate_test_model(output_dir, tests, prefix = ""):
     original_dir = os.getcwd()
     os.chdir(output_dir)
     f = open("GltfTestsModel.qml", "w")
     f.write("import QtQuick\n")
     f.write("import QtQml.Models\n\n")
 
-    for test in tests:
-        f.write("import \"" + test + "\"\n")
-
     f.write("ListModel {\n")
     for test in tests:
         f.write("\tListElement {\n")
         f.write("\t\tname: \"" + test + "\"\n")
-        f.write("\t\tsource: \"" + tests[test] + "\"\n")
+        f.write("\t\tsource: \"" + prefix + tests[test] + "\"\n")
         f.write("\t}\n")
     f.write("}\n") #ListModel
 
@@ -290,18 +254,19 @@ if __name__ == '__main__':
         # Generate test viewer application
         copy_template_files(args.output)
 
+        modelDir = args.output + os.path.sep + "models"
+
         cmds = []
         for model in models:
-            output_path = args.output + os.path.sep + model + os.path.sep
+            output_path = modelDir + os.path.sep + model + os.path.sep
             cmd = [args.balsam, "-o", output_path, models[model]]
             cmds.append(cmd)
         Pool().map(run_command, cmds)
 
         # Generate QML Viewer code
-        tests = generate_test_list(args.output, blacklist)
-        generate_test_model(args.output, tests)
-        generate_qrc_files(args.output, blacklist)
-        generate_ios_bundle_data(args.output, blacklist)
+        tests = generate_test_list(modelDir, blacklist)
+        generate_test_model(args.output, tests, "models" + os.path.sep)
+        #generate_qrc_files(args.output, blacklist)
     else:
         # Generate Lancelot project instead
         # Copy lancelot project template
