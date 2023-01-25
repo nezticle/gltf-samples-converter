@@ -96,6 +96,8 @@ def generate_qrc_files(output_dir, blacklist):
         f.write("\tRESOURCES += \\\n")
 
     for qrc in qrcList:
+        if ' ' in qrc:
+            qrc = '"' + qrc + '"' 
         f.write("\t\t" + qrc + " \\\n")
     f.write("} #!ios\n")
     f.close()
@@ -198,10 +200,10 @@ def generate_lancelot_tests(output_dir, tests):
         xPos = 0
         isAnimated = False
         if test in settings:
-            scale = settings[test]['scale']
+            scale = settings[test].get('scale', 1)
             xPos = settings[test].get('x', 0)
             yPos = settings[test].get('y', 0)
-            isAnimated = settings[test]['animated']
+            isAnimated = settings[test].get('animated', False)
 
         if isAnimated:
             # need to modify the original file to not animate during the test
@@ -237,7 +239,7 @@ def generate_lancelot_tests(output_dir, tests):
         os.chdir("..")
 
         if not test in settings:
-            print("Settings for " + test + "not found, will be ignored")
+            print("Settings for " + test + " not found, will be ignored")
             ignoreFile.write(test + "/" + testFileName + "\n")
 
     ignoreFile.close()
