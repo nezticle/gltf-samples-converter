@@ -118,6 +118,9 @@ def generate_tests(directory, blacklist):
         gltf_variant_dirs = [d for d in model_contents if d.startswith("glTF")]
 
         for variant_dir in gltf_variant_dirs:
+            # assimp v5.2.5 cannot support buffer descriptions
+            if variant_dir == 'glTF-Meshopt':
+                continue
             model_file = [f for f in os.listdir(variant_dir)
                           if f.endswith(".glb") or f.endswith(".gltf")][0]
             os.chdir(variant_dir)
