@@ -240,7 +240,7 @@ def generate_lancelot_tests(output_dir, tests):
         os.chdir("..")
 
         if not test in settings:
-            print("Settings for " + test + " not found, will be ignored")
+            print(f"Settings for {test} not found, will be ignored".encode('utf-8'))
             ignoreFile.write(test + "/" + testFileName + "\n")
 
     ignoreFile.close()
