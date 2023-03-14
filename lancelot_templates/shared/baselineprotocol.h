@@ -1,30 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the test suite of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL-EXCEPT$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 as published by the Free Software
-** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
 #ifndef BASELINEPROTOCOL_H
 #define BASELINEPROTOCOL_H
@@ -32,7 +7,7 @@
 #include <QDataStream>
 #include <QTcpSocket>
 #include <QImage>
-#include <QVector>
+#include <QList>
 #include <QMap>
 #include <QPointer>
 #include <QStringList>
@@ -43,6 +18,7 @@
 #define FileFormat "png"
 
 extern const QString PI_Project;
+extern const QString PI_ProjectImageKeys;
 extern const QString PI_TestCase;
 extern const QString PI_HostName;
 extern const QString PI_HostAddress;
@@ -51,19 +27,11 @@ extern const QString PI_OSVersion;
 extern const QString PI_QtVersion;
 extern const QString PI_QtBuildMode;
 extern const QString PI_GitCommit;
-extern const QString PI_QMakeSpec;
-extern const QString PI_PulseGitBranch;
-extern const QString PI_PulseTestrBranch;
+extern const QString PI_GitBranch;
 
 class PlatformInfo : public QMap<QString, QString>
 {
 public:
-    PlatformInfo();
-    PlatformInfo(const PlatformInfo &other);
-    ~PlatformInfo()
-    {}
-    PlatformInfo &operator=(const PlatformInfo &other);
-
     static PlatformInfo localHostInfo();
 
     void addOverride(const QString& key, const QString& value);
@@ -73,7 +41,7 @@ public:
 
 private:
     QStringList orides;
-    bool adHoc;
+    bool adHoc = true;
     friend QDataStream & operator<< (QDataStream &stream, const PlatformInfo &pi);
     friend QDataStream & operator>> (QDataStream &stream, PlatformInfo& pi);
 };
@@ -83,16 +51,6 @@ QDataStream & operator>> (QDataStream &stream, PlatformInfo& pi);
 
 struct ImageItem
 {
-public:
-    ImageItem()
-        : status(Ok), itemChecksum(0)
-    {}
-    ImageItem(const ImageItem &other)
-    { *this = other; }
-    ~ImageItem()
-    {}
-    ImageItem &operator=(const ImageItem &other);
-
     static quint64 computeChecksum(const QImage& image);
 
     enum ItemStatus {
@@ -106,10 +64,10 @@ public:
 
     QString testFunction;
     QString itemName;
-    ItemStatus status;
+    ItemStatus status = Ok;
     QImage image;
     QList<quint64> imageChecksums;
-    quint16 itemChecksum;
+    quint16 itemChecksum = 0;
     QByteArray misc;
 
     void writeImageToStream(QDataStream &stream) const;
@@ -120,8 +78,7 @@ QDataStream & operator>> (QDataStream &stream, ImageItem& ii);
 
 Q_DECLARE_METATYPE(ImageItem);
 
-typedef QVector<ImageItem> ImageItemList;
-
+typedef QList<ImageItem> ImageItemList;
 
 class BaselineProtocol
 {
@@ -129,7 +86,7 @@ public:
     BaselineProtocol();
     ~BaselineProtocol();
 
-    static BaselineProtocol *instance(QObject *parent = 0);
+    static BaselineProtocol *instance(QObject *parent = nullptr);
 
     // ****************************************************
     // Important constants here
@@ -158,12 +115,12 @@ public:
     // For client:
 
     // For advanced client:
-    bool connect(const QString &testCase, bool *dryrun = 0, const PlatformInfo& clientInfo = PlatformInfo());
+    bool connect(const QString &testCase, bool *dryrun = nullptr, const PlatformInfo& clientInfo = PlatformInfo());
     bool disconnect();
     bool requestBaselineChecksums(const QString &testFunction, ImageItemList *itemList);
     bool submitMatch(const ImageItem &item, QByteArray *serverMsg);
     bool submitNewBaseline(const ImageItem &item, QByteArray *serverMsg);
-    bool submitMismatch(const ImageItem &item, QByteArray *serverMsg, bool *fuzzyMatch = 0);
+    bool submitMismatch(const ImageItem &item, QByteArray *serverMsg, bool *fuzzyMatch = nullptr);
 
     // For server:
     bool acceptConnection(PlatformInfo *pi);

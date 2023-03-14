@@ -12,11 +12,9 @@ qt_internal_add_test(tst_gltf2tester
         ../shared/lookup3.cpp
         ../shared/qbaselinetest.cpp ../shared/qbaselinetest.h
         tst_gltf2tester.cpp
-    DEFINES
-        QMAKESPEC=\\\"\\\"
     INCLUDE_DIRECTORIES
         ../shared
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::Gui
         Qt::Network
     TESTDATA ${test_data}

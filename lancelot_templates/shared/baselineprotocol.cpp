@@ -1,30 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the test suite of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL-EXCEPT$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 as published by the Free Software
-** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2021 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 #include "baselineprotocol.h"
 #include <QLibraryInfo>
 #include <QImage>
@@ -42,6 +17,7 @@
 #include <QRegularExpression>
 
 const QString PI_Project(QLS("Project"));
+const QString PI_ProjectImageKeys(QLS("ProjectImageKeys"));
 const QString PI_TestCase(QLS("TestCase"));
 const QString PI_HostName(QLS("HostName"));
 const QString PI_HostAddress(QLS("HostAddress"));
@@ -50,28 +26,14 @@ const QString PI_OSVersion(QLS("OSVersion"));
 const QString PI_QtVersion(QLS("QtVersion"));
 const QString PI_QtBuildMode(QLS("QtBuildMode"));
 const QString PI_GitCommit(QLS("GitCommit"));
-const QString PI_QMakeSpec(QLS("QMakeSpec"));
-const QString PI_PulseGitBranch(QLS("PulseGitBranch"));
-const QString PI_PulseTestrBranch(QLS("PulseTestrBranch"));
-
-#ifndef QMAKESPEC
-#define QMAKESPEC "Unknown"
-#endif
-
-PlatformInfo::PlatformInfo()
-    : QMap<QString, QString>(), adHoc(true)
-{
-}
+const QString PI_GitBranch(QLS("GitBranch"));
 
 PlatformInfo PlatformInfo::localHostInfo()
 {
     PlatformInfo pi;
     pi.insert(PI_HostName, QHostInfo::localHostName());
     pi.insert(PI_QtVersion, QLS(qVersion()));
-    pi.insert(PI_QMakeSpec, QString(QLS(QMAKESPEC)).remove(QRegularExpression(QLS("^.*mkspecs/"))));
-#if QT_VERSION >= 0x050000
     pi.insert(PI_QtBuildMode, QLibraryInfo::isDebugBuild() ? QLS("QtDebug") : QLS("QtRelease"));
-#endif
 #if defined(Q_OS_LINUX) && QT_CONFIG(process)
     pi.insert(PI_OSName, QLS("Linux"));
 #elif defined(Q_OS_WIN)
@@ -83,62 +45,35 @@ PlatformInfo PlatformInfo::localHostInfo()
 #endif
     pi.insert(PI_OSVersion, QSysInfo::kernelVersion());
 
+    QString gc = qEnvironmentVariable("BASELINE_GIT_COMMIT");
 #if QT_CONFIG(process)
-    QProcess git;
-    QString cmd;
-    QStringList args;
-#if defined(Q_OS_WIN)
-    cmd = QLS("cmd.exe");
-    args << QLS("/c") << QLS("git");
-#else
-    cmd = QLS("git");
-#endif
-    args << QLS("log") << QLS("--max-count=1") << QLS("--pretty=%H [%an] [%ad] %s");
-    git.start(cmd, args);
-    git.waitForFinished(3000);
-    if (!git.exitCode())
-        pi.insert(PI_GitCommit, QString::fromLocal8Bit(git.readAllStandardOutput().constData()).simplified());
-    else
-        pi.insert(PI_GitCommit, QLS("Unknown"));
-
-    QByteArray gb = qgetenv("PULSE_GIT_BRANCH");
-    if (!gb.isEmpty()) {
-        pi.insert(PI_PulseGitBranch, QString::fromLatin1(gb));
-        pi.setAdHocRun(false);
-    }
-    QByteArray tb = qgetenv("PULSE_TESTR_BRANCH");
-    if (!tb.isEmpty()) {
-        pi.insert(PI_PulseTestrBranch, QString::fromLatin1(tb));
-        pi.setAdHocRun(false);
-    }
-    if (!qgetenv("JENKINS_HOME").isEmpty()) {
-        pi.setAdHocRun(false);
-        gb = qgetenv("GIT_BRANCH");
-        if (!gb.isEmpty()) {
-            // FIXME: the string "Pulse" should be eliminated, since that is not the used tool.
-            pi.insert(PI_PulseGitBranch, QString::fromLatin1(gb));
-        }
+    if (gc.isEmpty()) {
+        QProcess git;
+        QString cmd;
+        QStringList args;
+    #if defined(Q_OS_WIN)
+        cmd = QLS("cmd.exe");
+        args << QLS("/c") << QLS("git");
+    #else
+        cmd = QLS("git");
+    #endif
+        args << QLS("log") << QLS("--max-count=1") << QLS("--pretty=%H [%an] [%ad] %s");
+        git.start(cmd, args);
+        git.waitForFinished(3000);
+        if (!git.exitCode())
+            gc = QString::fromLocal8Bit(git.readAllStandardOutput().constData()).simplified();
     }
 #endif // QT_CONFIG(process)
+    pi.insert(PI_GitCommit, gc.isEmpty() ? QLS("Unknown") : gc);
+
+    if (qEnvironmentVariableIsSet("JENKINS_HOME"))
+        pi.setAdHocRun(false);
+
+    QString gb = qEnvironmentVariable("GIT_BRANCH");
+    if (!gb.isEmpty())
+        pi.insert(PI_GitBranch, gb);
 
     return pi;
-}
-
-
-PlatformInfo::PlatformInfo(const PlatformInfo &other)
-    : QMap<QString, QString>(other)
-{
-    orides = other.orides;
-    adHoc = other.adHoc;
-}
-
-
-PlatformInfo &PlatformInfo::operator=(const PlatformInfo &other)
-{
-    QMap<QString, QString>::operator=(other);
-    orides = other.orides;
-    adHoc = other.adHoc;
-    return *this;
 }
 
 
@@ -183,17 +118,6 @@ QDataStream & operator>> (QDataStream &stream, PlatformInfo &pi)
 }
 
 
-ImageItem &ImageItem::operator=(const ImageItem &other)
-{
-    testFunction = other.testFunction;
-    itemName = other.itemName;
-    itemChecksum = other.itemChecksum;
-    status = other.status;
-    image = other.image;
-    imageChecksums = other.imageChecksums;
-    return *this;
-}
-
 // Defined in lookup3.c:
 void hashword2 (
 const quint32 *k,         /* the key, an array of quint32 values */
@@ -204,8 +128,8 @@ quint32       *pb);       /* IN: more seed OUT: secondary hash value */
 quint64 ImageItem::computeChecksum(const QImage &image)
 {
     QImage img(image);
-    const int bpl = img.bytesPerLine();
-    const int padBytes = bpl - (img.width() * img.depth() / 8);
+    const qsizetype bpl = img.bytesPerLine();
+    const int padBytes = bpl - (qsizetype(img.width()) * img.depth() / 8);
     if (padBytes) {
         uchar *p = img.bits() + bpl - padBytes;
         const int h = img.height();
@@ -273,7 +197,7 @@ void ImageItem::writeImageToStream(QDataStream &out) const
     out << quint8('Q') << quint8(image.format());
     out << quint8(QSysInfo::ByteOrder) << quint8(0);       // pad to multiple of 4 bytes
     out << quint32(image.width()) << quint32(image.height()) << quint32(image.bytesPerLine());
-    out << qCompress((const uchar *)image.constBits(), image.sizeInBytes());
+    out << qCompress(reinterpret_cast<const uchar *>(image.constBits()), image.sizeInBytes());
     //# can be followed by colormap for formats that use it
 }
 
