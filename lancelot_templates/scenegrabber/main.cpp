@@ -157,7 +157,7 @@ private:
 
 int main(int argc, char *argv[])
 {
-    qSetGlobalQHashSeed(0);
+    QHashSeed::setDeterministicGlobalSeed();
 
     QGuiApplication a(argc, argv);
 

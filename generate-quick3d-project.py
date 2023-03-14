@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import os
-from shutil import copy2
-from distutils.dir_util import copy_tree
+from shutil import copy2, copytree
 from argparse import ArgumentParser
 import xml.etree.cElementTree as ET
 import json
@@ -49,7 +48,7 @@ def copy_template_files(output_dir):
     copy2("templates/viewer.qrc", output_dir)
 
 def copy_lancelot_template_files(output_dir):
-    copy_tree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir)
+    copytree(os.getcwd() + os.path.sep + "lancelot_templates", output_dir, dirs_exist_ok=True)
     copy2("templates/environment.hdr", output_dir + os.path.sep + "data")
 
 def generate_qrc_files(output_dir, blacklist):
@@ -119,7 +118,7 @@ def generate_tests(directory, blacklist):
 
         for variant_dir in gltf_variant_dirs:
             # assimp v5.2.5 cannot support buffer descriptions
-            if variant_dir == 'glTF-Meshopt':
+            if variant_dir == 'glTF-Meshopt' or variant_dir == 'glTF-Draco':
                 continue
             model_file = [f for f in os.listdir(variant_dir)
                           if f.endswith(".glb") or f.endswith(".gltf")][0]
@@ -143,9 +142,11 @@ def generate_test_list(output_dir, blacklist):
             continue
         os.chdir(test)
         # Get the component name
-        component = [f for f in os.listdir(".")
-                    if f.endswith(".qml")][0]
-        tests[test] = test + "/" + component
+        components = [f for f in os.listdir(".")
+                      if f.endswith(".qml")]
+        if not components:
+            continue
+        tests[test] = test + "/" + components[0]
         os.chdir("..")
     os.chdir(original_dir)
     return tests
