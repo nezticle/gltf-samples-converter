@@ -186,7 +186,7 @@ def generate_lancelot_tests(output_dir, tests):
     original_dir = os.getcwd()
     os.chdir(output_dir)
 
-    ignoreFile = open("Ignore", "a")
+    ignoreFile = open("Ignore", "a", encoding='utf-8')
     for test in tests:
         # Maintain the Ignore file
         ignoreFile.write(tests[test] + "\n")
