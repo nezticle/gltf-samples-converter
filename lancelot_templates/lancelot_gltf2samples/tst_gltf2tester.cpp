@@ -153,7 +153,9 @@ void tst_glTF2Tester::setupTestSuite(const QByteArray& filter)
     std::sort(itemFiles.begin(), itemFiles.end());
     for (const QString &filePath : std::as_const(itemFiles)) {
         QByteArray itemName = filePath.mid(testSuitePath.length() + 1).toLatin1();
-        QBaselineTest::newRow(itemName, checksumFileOrDir(filePath)) << filePath;
+        QString itemDir = QFileInfo(filePath).path();
+        quint16 checkSum = checksumFileOrDir(itemDir);
+        QBaselineTest::newRow(itemName, checkSum) << filePath;
         numItems++;
     }
 
@@ -231,16 +233,15 @@ quint16 tst_glTF2Tester::checksumFileOrDir(const QString &path)
         return 0;
     if (fi.isFile()) {
         QFile f(path);
-        bool isBinary = path.endsWith(".png") || path.endsWith(".jpg");
+        bool isBinary = !path.endsWith(".qml");
         f.open(isBinary ? QIODevice::ReadOnly : QIODevice::ReadOnly | QIODevice::Text);
         QByteArray contents = f.readAll();
         return qChecksum(contents);
     }
     if (fi.isDir()) {
-        static const QStringList nameFilters = QStringList() << "*.qml" << "*.cpp" << "*.png" << "*.jpg";
         quint16 cs = 0;
-        const auto entryList = QDir(fi.filePath()).entryList(nameFilters,
-                                                             QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+        const auto entryList = QDir(fi.filePath()).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot,
+                                                             QDir::Name);
         for (const QString &item : entryList)
             cs ^= checksumFileOrDir(path + QLatin1Char('/') + item);
         return cs;
