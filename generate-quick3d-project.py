@@ -138,7 +138,7 @@ def generate_test_list(output_dir, blacklist):
     for test in sorted(os.listdir(".")):
         if not os.path.isdir(test):
             continue
-        if model in blacklist:
+        if test in blacklist:
             continue
         os.chdir(test)
         # Get the component name
