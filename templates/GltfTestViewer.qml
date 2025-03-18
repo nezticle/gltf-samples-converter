@@ -327,7 +327,7 @@ Window {
             ListView {
                 id: listView
                 width: parent.width
-                ColumnLayout.fillHeight: true
+                Layout.fillHeight: true
                 model: testsModel
                 delegate: testDelegate
                 highlight: highlightBar
