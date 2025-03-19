@@ -14,7 +14,7 @@ def generate_ios_bundle_data(output_dir, blacklist):
     os.chdir(output_dir)
 
     # Open the .pro file to append the build_data commands
-    f = open("gltf2TestViewer.pro", "a")
+    f = open("gltf2TestViewer.pro", "a", encoding='utf-8')
     f.write("ios {\n")
     f.write("\tios_models.files = ")
 
@@ -88,7 +88,7 @@ def generate_qrc_files(output_dir, blacklist):
         os.chdir("..")
 
     # append the QRC file to the .pro file
-    f = open("gltf2TestViewer.pro", "a")
+    f = open("gltf2TestViewer.pro", "a", encoding='utf-8')
     f.write("!ios {\n")
 
     if len(qrcList) > 0:
@@ -154,7 +154,7 @@ def generate_test_list(output_dir, blacklist):
 def generate_test_model(output_dir, tests):
     original_dir = os.getcwd()
     os.chdir(output_dir)
-    f = open("GltfTestsModel.qml", "w")
+    f = open("GltfTestsModel.qml", "w", encoding='utf-8')
     f.write("import QtQuick\n")
     f.write("import QtQml.Models\n\n")
 
@@ -174,12 +174,12 @@ def generate_test_model(output_dir, tests):
 
 def generate_lancelot_tests(output_dir, tests):
     # load the template file
-    templateFile = open("templates/LancelotView.qml", "r")
+    templateFile = open("templates/LancelotView.qml", "r", encoding='utf-8')
     templateString = templateFile.read()
     templateFile.close()
 
     # Load settings file
-    settingsFile = open("lancelot_settings.json", "r")
+    settingsFile = open("lancelot_settings.json", "r", encoding='utf-8')
     settings = json.loads(settingsFile.read())
     settingsFile.close()
 
@@ -211,12 +211,12 @@ def generate_lancelot_tests(output_dir, tests):
             # replace "running: true" with "running: false" which should
             # work because the only instances of this in generate files are for
             # timeline animations
-            originalFile = open(tests[test], "r")
+            originalFile = open(tests[test], "r", encoding='utf-8')
             contents = originalFile.read()
             originalFile.close()
             contents = contents.replace("running: true", "running: false")
             contents = contents.replace("currentFrame: 0", "currentFrame: 500")
-            originalFile = open(tests[test], "w")
+            originalFile = open(tests[test], "w", encoding='utf-8')
             originalFile.write(contents)
             originalFile.close()
 
@@ -234,7 +234,7 @@ def generate_lancelot_tests(output_dir, tests):
         componentName = componentName.replace(".qml", "")
         testFileName = componentName + "Test.qml"
         os.chdir(test)
-        f = open(testFileName, "w")
+        f = open(testFileName, "w", encoding='utf-8')
         f.write(localTemplate)
         f.close()
         os.chdir("..")
@@ -248,7 +248,7 @@ def generate_lancelot_tests(output_dir, tests):
 
 def populate_blacklist():
     blacklist = []
-    f = open("blacklist.txt", "r")
+    f = open("blacklist.txt", "r", encoding='utf-8')
     for line in f:
         if line.startswith("#"):
             continue
