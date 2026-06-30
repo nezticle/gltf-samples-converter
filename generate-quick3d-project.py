@@ -114,7 +114,7 @@ def generate_tests(directory, blacklist):
             continue
         os.chdir(model)
         model_contents = os.listdir(".")
-        gltf_variant_dirs = [d for d in model_contents if d.startswith("glTF")]
+        gltf_variant_dirs = sorted(d for d in model_contents if d.startswith("glTF"))
 
         for variant_dir in gltf_variant_dirs:
             # assimp v5.2.5 cannot support buffer descriptions
